@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Custos pessoais em Seguro Saúde nos Estados Unidos</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Caroline, João, Joelmir e Renata" />
+    <meta name="date" content="2022-06-08" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <link href="libs/datatables-css/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="libs/datatables-binding/datatables.js"></script>
+    <script src="libs/jquery/jquery-3.6.0.min.js"></script>
+    <link href="libs/dt-core/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="libs/dt-core/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="libs/dt-core/js/jquery.dataTables.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Custos pessoais em Seguro Saúde nos Estados Unidos
+]
+.author[
+### Caroline, João, Joelmir e Renata
+]
+.institute[
+### UFSM
+]
+.date[
+### 2022-06-08
+]
+
+---
+
+
+
+
+# Tópicos da apresentação:
+
+a) Variáveis em estudo;
+
+b) Importação da base;
+
+c) Renomeando as variáveis e Redefinição de uma variável;
+
+d) Investigação e contagem dos NA's de todas as variáveis; 
+
+e) Análise descritiva das variáveis numéricas;
+
+f) Criação de uma variável categórica a partir de variáveis já existentes na base;
+
+g) Filtragem de linhas segundo algum critério.
+
+---
+# Banco de dados
+
+O [banco de dados](https://www.kaggle.com/datasets/mirichoi0218/insurance) utilizado em nosso estudo, traz à discussão uma previsão de gastos com Seguro de Saúde privado nos Estados Unidos. O qual leva em consideração a idade do beneficiário, número de dependentes, área residencial, dentre outros.
+
+&lt;img src="health-Insurance.png" width="549" style="display: block; margin: auto;" /&gt;
+
+---
+# Variáveis do estudo
+
+**Idade**: Idade do beneficiário principal.
+
+**Genero**: Gênero do contratante do seguro, feminino ou masculino.
+
+**IMC**: Índice de massa corporal, fornecendo uma compreensão do corpo, pesos relativamente altos ou baixos em relação à altura,
+índice objetivo de peso corporal (kg / m ^ 2) usando a relação altura / peso, idealmente 18,5 a 24,9.
+
+**Filhos**: Número de Filhos cobertos pelo seguro saúde / Número de dependentes.
+
+**Fumante**: Se fuma ou não.
+
+**Regiao**: A área residencial do beneficiário nos EUA, nordeste, sudeste, sudoeste, noroeste.
+
+**Encargos**: Custos médicos individuais faturados pelo seguro de saúde.
+
+---
+# Importação da base
+
+
+```r
+dados1&lt;-readr::read_csv("insurance.csv")
+```
+
+```
+## Rows: 1338 Columns: 7
+## -- Column specification --------------------------------------------------------
+## Delimiter: ","
+## chr (3): sex, smoker, region
+## dbl (4): age, bmi, children, charges
+## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+---
+class: middle
+<div id="htmlwidget-f4af7ef797efa2c9d0b0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f4af7ef797efa2c9d0b0">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[19,18,28,33,32,31,46,37,37,60,25,62,23,56,27,19,52,23,56,30,60,30,18,34,37,59,63,55,23,31,22,18,19,63,28,19,62,26,35,60,24,31,41,37,38,55,18,28,60,36],["female","male","male","male","male","female","female","female","male","female","male","female","male","female","male","male","female","male","male","male","female","female","male","female","male","female","female","female","male","male","male","female","female","male","male","male","female","male","male","male","female","female","male","female","male","male","female","female","female","male"],[27.9,33.77,33,22.705,28.88,25.74,33.44,27.74,29.83,25.84,26.22,26.29,34.4,39.82,42.13,24.6,30.78,23.845,40.3,35.3,36.005,32.4,34.1,31.92,28.025,27.72,23.085,32.775,17.385,36.3,35.6,26.315,28.6,28.31,36.4,20.425,32.965,20.8,36.67,39.9,26.6,36.63,21.78,30.8,37.05,37.3,38.665,34.77,24.53,35.2],[0,1,3,0,0,0,1,3,2,0,0,0,0,0,0,1,1,0,0,0,0,1,0,1,2,3,0,2,1,2,0,0,5,0,1,0,3,0,1,0,0,2,1,2,1,0,2,0,0,1],["yes","no","no","no","no","no","no","no","no","no","no","yes","no","no","yes","no","no","no","no","yes","no","no","no","yes","no","no","no","no","no","yes","yes","no","no","no","yes","no","no","no","yes","yes","no","no","no","no","no","no","no","no","no","yes"],["southwest","southeast","southeast","northwest","northwest","southeast","southeast","northwest","northeast","northwest","northeast","southeast","southwest","southeast","southeast","southwest","northeast","northeast","southwest","southwest","northeast","southwest","southeast","northeast","northwest","southeast","northeast","northwest","northwest","southwest","southwest","northeast","southwest","northwest","southwest","northwest","northwest","southwest","northeast","southwest","northeast","southeast","southeast","southeast","northeast","southwest","northeast","northwest","southeast","southeast"],[16884.924,1725.5523,4449.462,21984.47061,3866.8552,3756.6216,8240.5896,7281.5056,6406.4107,28923.13692,2721.3208,27808.7251,1826.843,11090.7178,39611.7577,1837.237,10797.3362,2395.17155,10602.385,36837.467,13228.84695,4149.736,1137.011,37701.8768,6203.90175,14001.1338,14451.83515,12268.63225,2775.19215,38711,35585.576,2198.18985,4687.797,13770.0979,51194.55914,1625.43375,15612.19335,2302.3,39774.2763,48173.361,3046.062,4949.7587,6272.4772,6313.759,6079.6715,20630.28351,3393.35635,3556.9223,12629.8967,38709.176]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>age<\/th>\n      <th>sex<\/th>\n      <th>bmi<\/th>\n      <th>children<\/th>\n      <th>smoker<\/th>\n      <th>region<\/th>\n      <th>charges<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":10,"columnDefs":[{"className":"dt-right","targets":[1,3,4,7]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+---
+# Renomeando as variáveis e Redefinição de uma variável
+
+Os termos do banco de dados que originalmente eram em inglês foram alterados para o português e a variável encargo foi redefinida em menos mil unidades.
+
+<div id="htmlwidget-f5b6c12bf4fb1ba479c3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f5b6c12bf4fb1ba479c3">{"x":{"filter":"none","vertical":false,"fillContainer":true,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[19,18,28,33,32,31,46,37,37,60,25,62,23,56,27,19,52,23,56,30,60,30,18,34,37,59,63,55,23,31,22,18,19,63,28,19,62,26,35,60,24,31,41,37,38,55,18,28,60,36],["feminino","masculino","masculino","masculino","masculino","feminino","feminino","feminino","masculino","feminino","masculino","feminino","masculino","feminino","masculino","masculino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","feminino","masculino","feminino","feminino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","masculino","masculino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","feminino","masculino","masculino","feminino","feminino","feminino","masculino"],[27.9,33.77,33,22.705,28.88,25.74,33.44,27.74,29.83,25.84,26.22,26.29,34.4,39.82,42.13,24.6,30.78,23.845,40.3,35.3,36.005,32.4,34.1,31.92,28.025,27.72,23.085,32.775,17.385,36.3,35.6,26.315,28.6,28.31,36.4,20.425,32.965,20.8,36.67,39.9,26.6,36.63,21.78,30.8,37.05,37.3,38.665,34.77,24.53,35.2],[0,1,3,0,0,0,1,3,2,0,0,0,0,0,0,1,1,0,0,0,0,1,0,1,2,3,0,2,1,2,0,0,5,0,1,0,3,0,1,0,0,2,1,2,1,0,2,0,0,1],["sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim","nao","nao","sim","nao","nao","nao","nao","sim","nao","nao","nao","sim","nao","nao","nao","nao","nao","sim","sim","nao","nao","nao","sim","nao","nao","nao","sim","sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim"],["sudoeste","sudeste","sudeste","noroeste","noroeste","sudeste","sudeste","noroeste","nordeste","noroeste","nordeste","sudeste","sudoeste","sudeste","sudeste","sudoeste","nordeste","nordeste","sudoeste","sudoeste","nordeste","sudoeste","sudeste","nordeste","noroeste","sudeste","nordeste","noroeste","noroeste","sudoeste","sudoeste","nordeste","sudoeste","noroeste","sudoeste","noroeste","noroeste","sudoeste","nordeste","sudoeste","nordeste","sudeste","sudeste","sudeste","nordeste","sudoeste","nordeste","noroeste","sudeste","sudeste"],[16.885,1.726,4.449,21.984,3.867,3.757,8.241,7.282,6.406,28.923,2.721,27.809,1.827,11.091,39.612,1.837,10.797,2.395,10.602,36.837,13.229,4.15,1.137,37.702,6.204,14.001,14.452,12.269,2.775,38.711,35.586,2.198,4.688,13.77,51.195,1.625,15.612,2.302,39.774,48.173,3.046,4.95,6.272,6.314,6.08,20.63,3.393,3.557,12.63,38.709]],"container":"<table class=\"display fill-container\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Idade<\/th>\n      <th>Genero<\/th>\n      <th>IMC<\/th>\n      <th>Filhos<\/th>\n      <th>Fumante<\/th>\n      <th>Regiao<\/th>\n      <th>Encargos<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"220px","pageLength":5,"columnDefs":[{"className":"dt-right","targets":[1,3,4,7]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[5,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+---
+# Investigação dos NA's das variáveis
+
+
+<div id="htmlwidget-3660589629b9aa18c9c4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3660589629b9aa18c9c4">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["1","2","3","4","5","6"],["Idade","Genero","IMC","Filhos","Fumante","Regiao"],[0,0,0,0,0,0]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>variable<\/th>\n      <th>total_Na<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"300px","pageLength":6,"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+---
+# Análise descritiva
+
+
+
+<div id="htmlwidget-1bb042ae7036162cc5ee" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1bb042ae7036162cc5ee">{"x":{"filter":"none","vertical":false,"fillContainer":true,"data":[["1","2","3","4"],["Idade","IMC","Filhos","Encargos"],[39.2070254110613,30.6633968609865,1.0949177877429,13.2704147982063],[39,30.4,1,9.382],[14.0499603792162,6.09818691167901,1.20549273978191,12.1100128823038],[18,15.96,0,1.122],[64,53.13,5,63.77]],"container":"<table class=\"display fill-container\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>variable<\/th>\n      <th>mean<\/th>\n      <th>median<\/th>\n      <th>sd<\/th>\n      <th>min<\/th>\n      <th>max<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"200px","pageLength":4,"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[4,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-8-1.png" style="display: block; margin: auto;" /&gt;
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-9-1.png" style="display: block; margin: auto;" /&gt;
+---
+# Criação de uma variável categórica
+
+Criando faixas etárias sob a variável Idade e categorizando a variável IMC.
+
+<div id="htmlwidget-cd98ba4146b22bb336bc" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cd98ba4146b22bb336bc">{"x":{"filter":"none","vertical":false,"fillContainer":true,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[19,18,28,33,32,31,46,37,37,60,25,62,23,56,27,19,52,23,56,30,60,30,18,34,37,59,63,55,23,31,22,18,19,63,28,19,62,26,35,60,24,31,41,37,38,55,18,28,60,36],["feminino","masculino","masculino","masculino","masculino","feminino","feminino","feminino","masculino","feminino","masculino","feminino","masculino","feminino","masculino","masculino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","feminino","masculino","feminino","feminino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","masculino","masculino","feminino","masculino","masculino","masculino","feminino","feminino","masculino","feminino","masculino","masculino","feminino","feminino","feminino","masculino"],[27.9,33.77,33,22.705,28.88,25.74,33.44,27.74,29.83,25.84,26.22,26.29,34.4,39.82,42.13,24.6,30.78,23.845,40.3,35.3,36.005,32.4,34.1,31.92,28.025,27.72,23.085,32.775,17.385,36.3,35.6,26.315,28.6,28.31,36.4,20.425,32.965,20.8,36.67,39.9,26.6,36.63,21.78,30.8,37.05,37.3,38.665,34.77,24.53,35.2],[0,1,3,0,0,0,1,3,2,0,0,0,0,0,0,1,1,0,0,0,0,1,0,1,2,3,0,2,1,2,0,0,5,0,1,0,3,0,1,0,0,2,1,2,1,0,2,0,0,1],["sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim","nao","nao","sim","nao","nao","nao","nao","sim","nao","nao","nao","sim","nao","nao","nao","nao","nao","sim","sim","nao","nao","nao","sim","nao","nao","nao","sim","sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim"],["sudoeste","sudeste","sudeste","noroeste","noroeste","sudeste","sudeste","noroeste","nordeste","noroeste","nordeste","sudeste","sudoeste","sudeste","sudeste","sudoeste","nordeste","nordeste","sudoeste","sudoeste","nordeste","sudoeste","sudeste","nordeste","noroeste","sudeste","nordeste","noroeste","noroeste","sudoeste","sudoeste","nordeste","sudoeste","noroeste","sudoeste","noroeste","noroeste","sudoeste","nordeste","sudoeste","nordeste","sudeste","sudeste","sudeste","nordeste","sudoeste","nordeste","noroeste","sudeste","sudeste"],[16.885,1.726,4.449,21.984,3.867,3.757,8.241,7.282,6.406,28.923,2.721,27.809,1.827,11.091,39.612,1.837,10.797,2.395,10.602,36.837,13.229,4.15,1.137,37.702,6.204,14.001,14.452,12.269,2.775,38.711,35.586,2.198,4.688,13.77,51.195,1.625,15.612,2.302,39.774,48.173,3.046,4.95,6.272,6.314,6.08,20.63,3.393,3.557,12.63,38.709],["18 a 25 anos","18 a 25 anos","26 a 33 anos","26 a 33 anos","26 a 33 anos","26 a 33 anos","42 a 49 anos","34 a 41 anos","34 a 41 anos","58 a 65 anos","18 a 25 anos","58 a 65 anos","18 a 25 anos","50 a 57 anos","26 a 33 anos","18 a 25 anos","50 a 57 anos","18 a 25 anos","50 a 57 anos","26 a 33 anos","58 a 65 anos","26 a 33 anos","18 a 25 anos","34 a 41 anos","34 a 41 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","18 a 25 anos","26 a 33 anos","18 a 25 anos","18 a 25 anos","18 a 25 anos","58 a 65 anos","26 a 33 anos","18 a 25 anos","58 a 65 anos","26 a 33 anos","34 a 41 anos","58 a 65 anos","18 a 25 anos","26 a 33 anos","34 a 41 anos","34 a 41 anos","34 a 41 anos","50 a 57 anos","18 a 25 anos","26 a 33 anos","58 a 65 anos","34 a 41 anos"],["acima","acima","acima","ideal","acima","acima","acima","acima","acima","acima","acima","acima","acima","acima","acima","ideal","acima","ideal","acima","acima","acima","acima","acima","acima","acima","acima","ideal","acima","abaixo","acima","acima","acima","acima","acima","acima","ideal","acima","ideal","acima","acima","acima","acima","ideal","acima","acima","acima","acima","acima","ideal","acima"]],"container":"<table class=\"display fill-container\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Idade<\/th>\n      <th>Genero<\/th>\n      <th>IMC<\/th>\n      <th>Filhos<\/th>\n      <th>Fumante<\/th>\n      <th>Regiao<\/th>\n      <th>Encargos<\/th>\n      <th>faixa_etaria<\/th>\n      <th>fIMC<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"250px","pageLength":6,"columnDefs":[{"className":"dt-right","targets":[1,3,4,7]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+class: middle
+&lt;img src="teste_files/figure-html/unnamed-chunk-11-1.png" style="display: block; margin: auto;" /&gt;
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-12-1.png" style="display: block; margin: auto;" /&gt;
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+Note que as faixa etárias "50 a 57 anos" e "58 a 65 anos" apresentaram as maiores médias de Encargos, representando 28,77% do banco de dados.
+---
+# Filtragem de linhas
+
+Considerando o destaque no gráfico anterior foi feito um filtro nas faixas etárias, "50 a 57 anos" e "58 a 65 anos", e foram selecionadas apenas as variáveis Encargos, Genero, Fumante, faixa_etária e fIMC.
+
+<div id="htmlwidget-60c561fbc9cc2fe8cbc0" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-60c561fbc9cc2fe8cbc0">{"x":{"filter":"none","vertical":false,"fillContainer":true,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50"],[28.923,27.809,11.091,10.797,10.602,13.229,14.001,14.452,12.269,13.77,15.612,48.173,20.63,12.63,47.496,13.607,23.245,30.167,14.235,11.742,11.947,11.357,43.579,11.073,11.083,10.942,30.185,47.291,12.105,10.226,22.413,30.942,47.056,10.825,11.881,11.488,30.26,11.381,9.635,12.815,13.616,11.164,27.323,9.878,10.96,19.749,10.451,13.405,48.824,10.436],["feminino","feminino","feminino","feminino","masculino","feminino","feminino","feminino","feminino","masculino","feminino","masculino","masculino","feminino","masculino","feminino","feminino","masculino","feminino","feminino","masculino","masculino","feminino","feminino","feminino","feminino","masculino","feminino","feminino","masculino","masculino","feminino","masculino","masculino","feminino","masculino","masculino","masculino","feminino","feminino","feminino","feminino","feminino","feminino","feminino","feminino","masculino","masculino","feminino","masculino"],["nao","sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim","nao","nao","sim","nao","sim","nao","nao","nao","nao","nao","sim","nao","nao","nao","sim","sim","nao","nao","sim","sim","sim","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","nao","sim","nao"],["58 a 65 anos","58 a 65 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","58 a 65 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","50 a 57 anos","58 a 65 anos","58 a 65 anos","50 a 57 anos"],["acima","acima","acima","acima","acima","acima","acima","ideal","acima","acima","acima","acima","acima","ideal","acima","acima","ideal","ideal","acima","acima","acima","acima","acima","acima","acima","ideal","acima","acima","acima","acima","ideal","acima","acima","acima","acima","acima","acima","acima","acima","acima","ideal","acima","acima","acima","acima","acima","acima","acima","acima","acima"]],"container":"<table class=\"display fill-container\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>Encargos<\/th>\n      <th>Genero<\/th>\n      <th>Fumante<\/th>\n      <th>faixa_etaria<\/th>\n      <th>fIMC<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"scrollY":"250px","pageLength":6,"columnDefs":[{"className":"dt-right","targets":1},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-16-1.png" style="display: block; margin: auto;" /&gt;
+Note que em média os beneficiários fumantes pagam, aproximadamente, 3x mais encargos que os não fumantes.
+
+---
+class: middle
+
+&lt;img src="teste_files/figure-html/unnamed-chunk-17-1.png" style="display: block; margin: auto;" /&gt;
+---
+class: inverse, middle, center
+
+# Conclusões
+
+
+Quanto maior a Idade da pessoa maior será o seu encargo do seguro, beneficiários com mais 42 anos já pagam encargos acima da média do seguro de saúde. Dentre as faixas etárias de maior encargo médio 50 a 57 anos e 68 a 65 anos, destaca-se os beneficiários do Gênero masculino, fumantes e com um IMC acima do ideal.
+
+
+Terror do seguro: 44.32  vs.
+Queridinho do seguro: 4.94
+---
+class: center, middle
+
+# Obrigado!
+
+Slides criados pelo pacote [**xaringan**](https://github.com/yihui/xaringan).
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

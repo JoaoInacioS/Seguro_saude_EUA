@@ -1,0 +1,303 @@
+---
+title: "Custos pessoais em Seguro Saúde nos Estados Unidos"
+subtitle: 
+author: "Caroline, João, Joelmir e Renata"
+institute: "UFSM"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+
+library(tidyverse)
+library(mypdf1)
+library(cowplot)
+source("funcoes.R")
+options(digits = 3)
+
+dados<-readr::read_csv("insurance.csv")
+```
+
+# Tópicos da apresentação:
+
+a) Variáveis em estudo;
+
+b) Importação da base;
+
+c) Renomeando as variáveis e Redefinição de uma variável;
+
+d) Investigação e contagem dos NA's de todas as variáveis; 
+
+e) Análise descritiva das variáveis numéricas;
+
+f) Criação de uma variável categórica a partir de variáveis já existentes na base;
+
+g) Filtragem de linhas segundo algum critério.
+
+---
+# Banco de dados
+
+O [banco de dados](https://www.kaggle.com/datasets/mirichoi0218/insurance) utilizado em nosso estudo, traz à discussão uma previsão de gastos com Seguro de Saúde privado nos Estados Unidos. O qual leva em consideração a idade do beneficiário, número de dependentes, área residencial, dentre outros.
+
+```{r echo=FALSE,fig.align='center'}
+knitr::include_graphics("health-Insurance.png")
+```
+
+---
+# Variáveis do estudo
+
+**Idade**: Idade do beneficiário principal.
+
+**Genero**: Gênero do contratante do seguro, feminino ou masculino.
+
+**IMC**: Índice de massa corporal, fornecendo uma compreensão do corpo, pesos relativamente altos ou baixos em relação à altura,
+índice objetivo de peso corporal (kg / m ^ 2) usando a relação altura / peso, idealmente 18,5 a 24,9.
+
+**Filhos**: Número de Filhos cobertos pelo seguro saúde / Número de dependentes.
+
+**Fumante**: Se fuma ou não.
+
+**Regiao**: A área residencial do beneficiário nos EUA, nordeste, sudeste, sudoeste, noroeste.
+
+**Encargos**: Custos médicos individuais faturados pelo seguro de saúde.
+
+---
+# Importação da base
+
+```{r}
+dados1<-readr::read_csv("insurance.csv")
+```
+---
+class: middle
+```{r echo=FALSE}
+DT::datatable(
+  head(dados1,50),
+  fillContainer = FALSE, options = list(pageLength = 10)
+)
+#knitr::kable(head(dados1,15), format = 'html')
+```
+---
+# Renomeando as variáveis e Redefinição de uma variável
+
+Os termos do banco de dados que originalmente eram em inglês foram alterados para o português e a variável encargo foi redefinida em menos mil unidades.
+
+```{r, echo = FALSE}
+dados<- dados1 |>  
+  dplyr::rename(c(Idade = age, Genero = sex, IMC= bmi, Filhos = children, 
+                  IMC= bmi,Fumante = smoker, Regiao = region, 
+                  Encargos = charges )) |> 
+  mutate(
+    Genero=recode(
+      Genero, 
+      "female"="feminino", 
+      "male"="masculino"
+    ),
+    Fumante=recode(
+      Fumante,
+      "yes"="sim",
+      "no"="nao"
+    ),
+    Regiao=recode(
+      Regiao, 
+      "northeast"="nordeste",
+      "southeast"="sudeste",
+      "southwest"="sudoeste",
+      "northwest"="noroeste"
+    ))
+
+dados3 <- dados |>
+  mutate(Encargos=round(Encargos*0.001,3))
+
+DT::datatable(
+  head(dados3,50),
+  fillContainer = TRUE, 
+  options = list(scrollY = "220px",pageLength = 5))
+
+
+#knitr::kable(head(dados3), format = 'html')
+```
+---
+# Investigação dos NA's das variáveis
+```{r echo=FALSE}
+nacont <- mypdf1::pdf1_na(dados3)
+```
+
+```{r echo=FALSE}
+DT::datatable(
+  head(nacont,6),
+  fillContainer = FALSE,
+  options = list(scrollY = "300px",pageLength = 6))
+#knitr::kable(head(nacont), format = 'html')
+```
+---
+# Análise descritiva
+
+```{r warning=FALSE, r,echo=FALSE}
+descr <- mypdf1::pdf1_summary(dados3)
+```
+
+```{r echo=FALSE}
+options(digits = 3)
+DT::datatable(
+  head(descr,4),
+  fillContainer = TRUE, 
+  options = list(scrollY = "200px",pageLength = 4))
+#knitr::kable(head(descr), format = 'html')
+```
+
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+p1<-grafboxgen(d= dados3, v = "", v1 = Idade, cores = "Set1",leg = T,
+               legx = "x", legy = "Idade",
+               titulo = "Gráfico Box plot para Idade", subtitulo = "")
+p2<-grafboxgen(d= dados3, v = "", v1 = IMC, cores = "Set1",leg = T,
+               legx = "x", legy = "IMC",
+               titulo = "Gráfico Box plot para IMC", subtitulo = "")
+cowplot::plot_grid(p1,p2,ncol = 2)
+
+```
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+p4<-grafboxgen(d= dados3, v = "", v1 = Encargos, cores = "Set1",leg = T,
+               legx = "x", legy = "Encargos",
+               titulo = "Gráfico Box plot para Encargos", subtitulo = "")
+p3<-grafboxgen(d= dados3, v = "", v1 = Filhos, cores = "Set1",leg = T,
+               legx = "x", legy = "Filhos",
+               titulo = "Gráfico Box plot para Filhos", subtitulo = "")
+cowplot::plot_grid(p3,p4,ncol = 2)
+```
+---
+# Criação de uma variável categórica
+
+Criando faixas etárias sob a variável Idade e categorizando a variável IMC.
+
+```{r, echo = FALSE}
+dados4 <- dados3 |> 
+  mutate(faixa_etaria=case_when(
+    Idade >= 18 & Idade < 26 ~ "18 a 25 anos",
+    Idade >= 26 & Idade < 34 ~ "26 a 33 anos",
+    Idade >= 34 & Idade < 42 ~ "34 a 41 anos",
+    Idade >= 42 & Idade < 50 ~ "42 a 49 anos",
+    Idade >= 50 & Idade < 58 ~ "50 a 57 anos",
+    Idade >= 58 & Idade < 66 ~ "58 a 65 anos",
+    TRUE ~ "Outros"
+  ),
+  fIMC=case_when(
+    IMC < 18.5 ~ "abaixo",
+    IMC >= 18.5 & IMC <= 24.9  ~ "ideal",
+    IMC > 24.9 ~ "acima",
+    TRUE ~ "Outros"
+  ))
+
+DT::datatable(
+  head(dados4,50),
+  fillContainer = TRUE, 
+  options = list(scrollY = "250px",pageLength = 6))
+#knitr::kable(head(dados4), format = 'html')
+
+```
+
+---
+class: middle
+```{r, echo=FALSE,fig.align='center'}
+grafboxgen(d= dados4, v = IMC, v1 = faixa_etaria, cores = "Set1",leg = T,
+           legx = "IMC" , legy = "Faixa Etaria",
+           titulo = "Box plot IMC vs Faixa etária", subtitulo = "")
+```
+---
+class: middle
+
+```{r echo=FALSE,fig.align='center'}
+grafboxgen(d= dados4, v = Fumante , v1 = Encargos, cores = "Set1",leg = T,
+           legx = "Fumante" , legy = "Encargos",
+           titulo = "Box plot Fumante vs Encargos", subtitulo = "")
+```
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+grafbarmedia(d= dados4, v = faixa_etaria, v1 = Encargos, cores = "Spectral",
+             cnum = T, leg = F, legx = "Faixa Etária", legy = "Média Encargos",
+             titulo = "Gráfico da média de Encargos por faixa etária"
+            , subtitulo = " ")
+```
+Note que as faixa etárias "50 a 57 anos" e "58 a 65 anos" apresentaram as maiores médias de Encargos, representando 28,77% do banco de dados.
+---
+# Filtragem de linhas
+
+Considerando o destaque no gráfico anterior foi feito um filtro nas faixas etárias, "50 a 57 anos" e "58 a 65 anos", e foram selecionadas apenas as variáveis Encargos, Genero, Fumante, faixa_etária e fIMC.
+
+```{r, echo = FALSE}
+dados5<- dados4 |> 
+  dplyr::select(Encargos, Genero, Fumante, faixa_etaria, fIMC) |> 
+  filter(faixa_etaria %in% c("58 a 65 anos","50 a 57 anos"))
+
+DT::datatable(
+  head(dados5,50),
+  fillContainer = TRUE, 
+  options = list(scrollY = "250px",pageLength = 6))
+#knitr::kable(head(dados5), format = 'html')
+```
+
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+grafbarmedia(d= dados5, v = Genero, v1 = Encargos, cores = "Set1",cnum = T,
+             leg = F, legx = "Genero", legy = "Média Encargos",
+             titulo = "Gráfico da média de Encargos por Genero", subtitulo = "Considerando as faixa etárias com maiores Encargos médio, de 50 a 57 anos e 58 a 65 anos")
+```
+
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+grafbarmedia(d= dados5, v = Fumante, v1 = Encargos, cores = "Set1",cnum = T,
+             leg = F, legx = "Fumante", legy = "Média Encargos",
+             titulo = "Gráfico da média de Encargos pelo evento de ser Fumante ou não", subtitulo = "Considerando as faixa etárias com maiores Encargos médio, de 50 a 57 anos e 58 a 65 anos")
+```
+Note que em média os beneficiários fumantes pagam, aproximadamente, 3x mais encargos que os não fumantes.
+
+---
+class: middle
+
+```{r, echo=FALSE,fig.align='center'}
+grafbarmedia(d= dados5, v = fIMC, v1 = Encargos, cores = "Set1",cnum = T,
+             leg = F, legx = "IMC", legy = "Média Encargos",
+             titulo = "Gráfico da média de Encargos pela categoria do IMC", subtitulo = "Considerando as faixa etárias com maiores Encargos médio, de 50 a 57 anos e 58 a 65 anos")
+```
+---
+class: inverse, middle, center
+
+# Conclusões
+```{r, include=FALSE}
+teste_ruim=dados4|>dplyr::filter(dados4$Genero=="masculino",dados4$Fumante=="sim",dados4$faixa_etaria=="58 a 65 anos", dados4$fIMC=="acima")
+media=mean(teste_ruim$Encargos) # 44.32149
+
+teste_bom=dados4|>dplyr::filter(dados4$Genero=="feminino",dados4$Fumante=="nao",dados4$faixa_etaria=="18 a 25 anos", dados4$fIMC=="ideal")
+media2=mean(teste_bom$Encargos) # 4.9389
+
+```
+
+Quanto maior a Idade da pessoa maior será o seu encargo do seguro, beneficiários com mais 42 anos já pagam encargos acima da média do seguro de saúde. Dentre as faixas etárias de maior encargo médio 50 a 57 anos e 68 a 65 anos, destaca-se os beneficiários do Gênero masculino, fumantes e com um IMC acima do ideal.
+
+
+Terror do seguro: 44.32  vs.
+Queridinho do seguro: 4.94
+---
+class: center, middle
+
+# Obrigado!
+
+Slides criados pelo pacote [**xaringan**](https://github.com/yihui/xaringan).
